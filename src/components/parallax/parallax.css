@@ -1,0 +1,62 @@
+/*
+ * Shared scroll parallax for homepage sections. A section with .parallax-scene defines the
+ * timeline; every descendant with data-speed (0.5, 0.8, 1.5 or 2) drifts by
+ * (speed - 1) × t × --amp while the section scrolls past, where t goes from 1 (section
+ * entering) through 0 (section centred) to -1 (section leaving). Browsers with scroll-driven
+ * animations run it here; useParallax.ts applies the same curve elsewhere. Reduced motion keeps
+ * every layer still.
+ */
+.parallax-scene {
+  view-timeline: --parallax-scene block;
+}
+
+/* A section can lower --amp for layers that sit close to text; useParallax.ts reads it too. */
+.parallax-scene [data-speed] {
+  --amp: 120px;
+  will-change: transform;
+}
+
+.parallax-scene [data-speed='0.5'] {
+  --v: 0.5;
+}
+
+.parallax-scene [data-speed='0.8'] {
+  --v: 0.8;
+}
+
+.parallax-scene [data-speed='1.5'] {
+  --v: 1.5;
+}
+
+.parallax-scene [data-speed='2'] {
+  --v: 2;
+}
+
+@media (max-width: 767px) {
+  .parallax-scene [data-speed] {
+    --amp: 40px;
+  }
+}
+
+/* Longhands on purpose: the animation shorthand would reset animation-timeline. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .parallax-scene [data-speed] {
+      animation-name: parallax-drift;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --parallax-scene;
+      animation-range: cover;
+    }
+  }
+}
+
+@keyframes parallax-drift {
+  from {
+    transform: translate3d(0, calc((var(--v) - 1) * var(--amp)), 0);
+  }
+
+  to {
+    transform: translate3d(0, calc((1 - var(--v)) * var(--amp)), 0);
+  }
+}

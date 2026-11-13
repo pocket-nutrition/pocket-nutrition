@@ -1,0 +1,115 @@
+/*
+ * Shared Tailwind entry point for every Tailwind-based tool page (currently /calculator,
+ * src/sandbox-app, and /examples, src/examples-app) — imported once from each tool's App.tsx.
+ * Only the theme + utility layers are imported, never `tailwindcss/preflight.css`: preflight
+ * resets base elements (h1, button, a, ...) globally, which would clobber the rest of the
+ * Docusaurus site sharing this same CSS bundle.
+ *
+ * Declaring the (empty, for now) `pn-reset` layer here — before the Tailwind imports —
+ * fixes its position ahead of `theme`/`utilities` in cascade-layer order without needing
+ * its rules defined yet. Its actual rules live further down, scoped to the tool roots below;
+ * putting them in this earlier layer (instead of unlayered CSS, which would beat every
+ * Tailwind utility regardless of specificity) means any utility class an element does set
+ * — `rounded-xl`, `px-4`, `bg-indigo-600`, ... — still wins normally.
+ */
+@layer pn-reset;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/*
+ * The tools wear the site's identity. `inline` makes the utilities read the brand tokens from
+ * src/css/custom.css directly: bg-paper, text-ink, border-line, font-serif (the display serif)…
+ */
+@theme inline {
+  --color-paper: var(--paper);
+  --color-cream: var(--cream);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-leaf: var(--leaf);
+  --color-leaf-deep: var(--leaf-deep);
+  --color-carrot: var(--carrot);
+  --color-carrot-soft: var(--carrot-soft);
+  --color-carrot-deep: var(--carrot-deep);
+  --color-line: var(--line);
+  --font-serif: var(--font-display);
+}
+
+/*
+ * The calculator was ported with Tailwind's stone greys and indigo accent. Rather than rewrite
+ * its classes, both palettes are redrawn here: stone becomes the site's warm paper-to-ink scale
+ * and indigo its leaf green, so `bg-indigo-600` renders leaf-deep. Same lightness steps as
+ * Tailwind's, so text that was readable stays readable.
+ */
+@theme {
+  --color-stone-50: #faf7f0;
+  --color-stone-100: #f3eee2;
+  --color-stone-200: #e6dfcf;
+  --color-stone-300: #d3cab7;
+  --color-stone-400: #9ba196;
+  --color-stone-500: #6f7a70;
+  --color-stone-600: #4a5a4e;
+  --color-stone-700: #3a473d;
+  --color-stone-800: #2a362d;
+  --color-stone-900: #1e2b22;
+  --color-stone-950: #141d17;
+  --color-indigo-50: #eef4ec;
+  --color-indigo-100: #e2ecdf;
+  --color-indigo-200: #c8dbc5;
+  --color-indigo-300: #a1c2a4;
+  --color-indigo-400: #6c9b78;
+  --color-indigo-500: #3e7a4e;
+  --color-indigo-600: #1f3d29;
+  --color-indigo-700: #17301f;
+  --color-indigo-800: #122618;
+  --color-indigo-900: #0d1c12;
+  --color-indigo-950: #08120b;
+  /* Gaps beyond 30% on the examples page. */
+  --color-bad: #a33a2a;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/*
+ * One root class per tool page — keep this list in sync with TAILWIND_TOOL_ROOTS in
+ * docusaurus.config.js, which scopes Tailwind's generated CSS to the same roots.
+ */
+.pn-calculator, .pn-calculator *, .pn-calculator *::before, .pn-calculator *::after,
+.pn-examples, .pn-examples *, .pn-examples *::before, .pn-examples *::after {
+  box-sizing: border-box;
+}
+
+/*
+ * The preflight resets these tools actually need: without them, native browser chrome shows
+ * through wherever a component doesn't happen to override it with its own utility classes —
+ * every element's default border (e.g. a stray rectangle around a search `<input>`, on top of
+ * its own styled wrapper), a `<button>`'s default background/border/radius (the grey, boxed-in
+ * look), and a `<ul>`'s default bullets/indent/margin.
+ *
+ * Kept in the `pn-reset` layer declared above (not unlayered) so it loses to `utilities`
+ * for any property a component's own class also sets — this can safely be as broad as
+ * preflight's own universal reset without fighting an explicit `border-*`/`rounded-*` class.
+ */
+@layer pn-reset {
+  .pn-calculator, .pn-calculator *, .pn-calculator *::before, .pn-calculator *::after,
+  .pn-examples, .pn-examples *, .pn-examples *::before, .pn-examples *::after {
+    border: 0 solid;
+  }
+
+  .pn-calculator button,
+  .pn-examples button {
+    background-color: transparent;
+    border-radius: 0;
+  }
+
+  .pn-calculator ul, .pn-calculator ol,
+  .pn-examples ul, .pn-examples ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+}

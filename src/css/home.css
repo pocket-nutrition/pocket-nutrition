@@ -1,0 +1,55 @@
+
+  .pn-home {
+    --section-pad: clamp(4rem, 8vw, 7.5rem);
+  }
+  .pn-home, .pn-home * { margin: 0; box-sizing: border-box; }
+  .pn-home { scroll-behavior: smooth; }
+  .pn-home { background: var(--paper); color: var(--ink); font-family: var(--font-body); }
+  .pn-home .wrap { max-width: var(--site-max); margin: 0 auto; padding: 0 var(--site-gutter); }
+  .pn-home .kicker { font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; color: var(--leaf); font-weight: 600; margin-bottom: 1.1rem; }
+  .pn-home .btn {
+    display: inline-flex; align-items: center; gap: .5rem;
+    font-size: .95rem; font-weight: 600; text-decoration: none;
+    padding: .8rem 1.5rem; border-radius: 999px;
+    transition: transform .15s cubic-bezier(.16,1,.3,1), box-shadow .15s;
+  }
+  .pn-home .btn:hover { transform: translateY(-2px); }
+  .pn-home .btn:focus-visible { outline: 3px solid var(--carrot); outline-offset: 2px; }
+  .pn-home .btn-primary { background: var(--leaf-deep); color: var(--paper); }
+  .pn-home .btn-primary:hover { box-shadow: 0 6px 16px rgba(31,61,41,.28); }
+  .pn-home .btn-ghost { color: var(--leaf-deep); border: 1.5px solid var(--leaf-deep); }
+  .pn-home .btn-ghost:hover { background: rgba(62,122,78,.08); }
+  @media (prefers-reduced-motion: reduce) {
+    .pn-home, .pn-home *, .pn-home *::before, .pn-home *::after { transition: none !important; }
+    .pn-home { scroll-behavior: auto; }
+  }
+
+  /* Header and footer: src/components/site-nav, src/components/site-footer. */
+
+  /* Keeps anchor-linked sections from landing flush under the sticky site bar (3.75rem tall). */
+  .pn-home #why, .pn-home #cooking, .pn-home #privacy, .pn-home #community, .pn-home #open-source, .pn-home #apps {
+    scroll-margin-top: 5rem;
+  }
+
+  /* ---------- Hero ---------- */
+  .pn-home .hero {
+    position: relative; overflow: hidden;
+    padding-top: var(--section-pad); padding-bottom: var(--section-pad);
+    background:
+      radial-gradient(60rem 30rem at 85% -10%, rgba(62,122,78,.10), transparent 60%),
+      radial-gradient(40rem 24rem at -10% 110%, rgba(224,122,47,.08), transparent 60%),
+      var(--paper);
+  }
+  /* Grid and phone scene: src/components/parallax-hero/parallax-hero.css */
+  .pn-home h1 { font-family: var(--font-display); font-weight: 500; font-size: clamp(2.6rem, 5.5vw, 4.4rem); line-height: 1.03; letter-spacing: -.01em; margin-bottom: 1.5rem; }
+  .pn-home h1 em { font-style: italic; color: var(--leaf); }
+  .pn-home .lead { font-size: clamp(1.05rem, 1.6vw, 1.2rem); line-height: 1.65; color: var(--ink-soft); max-width: 42ch; margin-bottom: 2.25rem; }
+  .pn-home .lead strong { color: var(--ink); font-weight: 600; }
+  .pn-home .lead a { color: var(--leaf); font-weight: 600; text-decoration: none; border-bottom: 2px solid var(--carrot-soft); }
+  .pn-home .lead a:hover { border-bottom-color: var(--carrot); }
+  .pn-home .cta-row { display: flex; flex-wrap: wrap; gap: .9rem; align-items: center; margin-bottom: 1.5rem; }
+  .pn-home .oss-note { font-size: .8rem; color: var(--ink-soft); }
+  .pn-home .oss-note .dot { display: inline-block; width: 8px; height: 8px; margin-right: .5rem; border-radius: 50%; background: var(--carrot); vertical-align: middle; }
+  .pn-home .oss-note a { color: var(--leaf); font-weight: 600; text-decoration: none; border-bottom: 1px solid currentColor; white-space: nowrap; }
+
+  /* Sections below the hero style themselves: src/components/{chore,security-galaxy,community}. */

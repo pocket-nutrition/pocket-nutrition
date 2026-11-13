@@ -1,0 +1,30 @@
+
+  .pn-privacy, .pn-privacy *, .pn-privacy *::before, .pn-privacy *::after { box-sizing: border-box; }
+  .pn-privacy {
+    --paper: #faf7f0; --cream: #f1ead9; --ink: #1e2b22; --ink-soft: #4a5a4e;
+    --leaf: #3e7a4e; --leaf-deep: #1f3d29; --carrot: #e07a2f; --carrot-soft: #f7e3cf;
+    --line: rgba(30,43,34,.14);
+    --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  .pn-privacy { -webkit-text-size-adjust: 100%; }
+  .pn-privacy { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-body); line-height: 1.7; }
+  .pn-privacy .wrap { max-width: 46rem; margin: 0 auto; padding: 0 clamp(1.25rem, 5vw, 2.5rem); }
+  .pn-privacy main.wrap { padding-top: clamp(2.5rem, 6vw, 4.5rem); padding-bottom: 5rem; }
+  .pn-privacy h1 { font-family: var(--font-display); font-weight: 500; font-size: clamp(2rem, 5vw, 2.9rem); line-height: 1.1; margin: 0 0 .6rem; }
+  .pn-privacy h2 { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.3rem, 3vw, 1.6rem); margin: 2.75rem 0 .75rem; }
+  .pn-privacy h3 { font-size: 1.02rem; margin: 1.75rem 0 .4rem; }
+  .pn-privacy .meta { color: var(--ink-soft); font-size: .92rem; margin: 0 0 2.5rem; }
+  .pn-privacy p, .pn-privacy li { color: var(--ink-soft); }
+  .pn-privacy strong { color: var(--ink); }
+  .pn-privacy a { color: var(--leaf); }
+  .pn-privacy ul { padding-left: 1.15rem; }
+  .pn-privacy li { margin-bottom: .4rem; }
+  .pn-privacy code { font-family: var(--font-mono); font-size: .88em; background: var(--cream); padding: .12em .38em; border-radius: 4px; color: var(--ink); }
+  .pn-privacy .callout { background: var(--cream); border-left: 3px solid var(--leaf); padding: 1.1rem 1.25rem; border-radius: 0 8px 8px 0; margin: 1.75rem 0; }
+  .pn-privacy .callout p:last-child { margin-bottom: 0; }
+  .pn-privacy table { width: 100%; border-collapse: collapse; margin: 1.25rem 0; font-size: .94rem; display: block; overflow-x: auto; }
+  .pn-privacy th, .pn-privacy td { text-align: left; padding: .6rem .75rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .pn-privacy th { color: var(--ink); font-weight: 600; white-space: nowrap; }
+  .pn-privacy hr { border: 0; border-top: 1px solid var(--line); margin: 3.5rem 0; }

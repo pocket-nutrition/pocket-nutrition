@@ -1,0 +1,460 @@
+/*
+ * "Why Pocket Nutrition" (ChoreSection.tsx): the shortcuts that make logging fast, in three
+ * tiers that shrink from the most to the least prominent, then a dark panel on the cooking math.
+ * No boxes around the copy: rules and spacing carry the structure, only the small samples of the
+ * app's interface sit on chips.
+ * Margins sit two classes deep so they beat home.css's `.pn-home * { margin: 0 }` reset.
+ */
+.chore {
+  position: relative;
+  overflow: hidden;
+  padding-top: var(--section-pad);
+  padding-bottom: var(--section-pad);
+  background: var(--cream);
+}
+
+.chore svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---------- Heading ---------- */
+.chore-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1.5rem 4rem;
+  align-items: end;
+}
+
+@media (max-width: 900px) {
+  .chore-head {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chore h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.chore h2 em {
+  font-style: italic;
+  color: var(--carrot-deep);
+}
+
+.chore .chore-lead {
+  font-size: clamp(1.05rem, 1.6vw, 1.15rem);
+  line-height: 1.65;
+  color: var(--ink-soft);
+  max-width: 46ch;
+}
+
+.chore-lead strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.chore h3,
+.chore h4 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  color: var(--ink);
+}
+
+/* ---------- Three tiers of shortcuts ---------- */
+.chore .chore-tiers {
+  margin-top: clamp(2.5rem, 5vw, 3.5rem);
+  border-bottom: 1px solid var(--line);
+}
+
+.chore-tier {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem 3rem;
+  padding: 2.5rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.chore-tier-head {
+  flex: 0 1 15rem;
+  min-width: 12.5rem;
+}
+
+.chore .chore-step {
+  margin-bottom: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  color: var(--carrot-deep);
+}
+
+.chore .chore-tier-head h3 {
+  margin-bottom: 0.5rem;
+  font-size: clamp(1.8rem, 3vw, 2.1rem);
+  line-height: 1.1;
+}
+
+.chore-tier-head p:last-child {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+/* Narrow enough minimum for the four "new meal" shortcuts to share one row on a laptop. */
+.chore .chore-features {
+  flex: 1 1 35rem;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9.75rem, 1fr));
+  gap: 1.75rem 1.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+/* Phones keep two short "new meal" columns; the wider samples further down need the full width. */
+@media (max-width: 520px) {
+  .chore-tier.is-second .chore-features,
+  .chore-tier.is-third .chore-features {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chore-feature {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+.chore-feature-icon {
+  display: grid;
+  place-items: center;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  border-radius: 50%;
+  background: var(--leaf-deep);
+  color: var(--paper);
+}
+
+.chore-feature-icon svg {
+  width: 46%;
+  height: 46%;
+  stroke-width: 1.8;
+}
+
+/* Each tier a step quieter than the one before. */
+.chore-tier.is-first {
+  --icon-size: 3.5rem;
+}
+
+.chore-tier.is-second {
+  --icon-size: 3rem;
+}
+
+.chore-tier.is-third {
+  --icon-size: 2.75rem;
+}
+
+.chore-tier.is-third .chore-feature-icon {
+  background: #fff;
+  color: var(--leaf-deep);
+}
+
+.chore-feature h4 {
+  font-size: 1.35rem;
+  line-height: 1.15;
+}
+
+.chore-tier.is-third .chore-feature h4 {
+  font-size: 1.25rem;
+}
+
+.chore-feature p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.chore-feature-link {
+  color: var(--leaf-deep);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 2px solid var(--carrot-soft);
+}
+
+.chore-feature-link:hover {
+  border-bottom-color: var(--carrot);
+}
+
+.chore-feature-link:focus-visible {
+  outline: 3px solid var(--carrot);
+  outline-offset: 2px;
+}
+
+/* ---------- Samples of the app's interface ---------- */
+.chore-sample {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.1rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 8px 18px -12px rgba(31, 61, 41, 0.5);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.chore-sample em {
+  font-weight: 400;
+}
+
+.chore-sample picture {
+  display: block;
+  flex: none;
+  margin-left: -0.5rem;
+}
+
+.chore-sample img {
+  display: block;
+  width: 1.75rem;
+  max-width: none;
+  height: 1.75rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.chore-sample-arrow,
+.chore-sample-accent {
+  color: var(--carrot-deep);
+}
+
+.chore-sample-muted {
+  font-weight: 400;
+  color: var(--ink-soft);
+}
+
+.chore-sample-barcode {
+  width: 1.4rem;
+  height: 0.9rem;
+  background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 3px, var(--ink) 3px 4px, transparent 4px 6px);
+}
+
+.chore-sample-plus {
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  margin-right: -0.5rem;
+  border-radius: 50%;
+  background: var(--cream);
+  color: var(--leaf-deep);
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.chore-segment {
+  display: inline-flex;
+  margin-right: -0.55rem;
+}
+
+.chore-segment span {
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+.chore-segment span.is-on {
+  background: var(--leaf-deep);
+  color: var(--paper);
+  font-weight: 600;
+}
+
+/* The portions sample is all segment, so it starts flush with the chip. */
+.chore-sample > .chore-segment:only-child {
+  margin-left: -0.55rem;
+}
+
+/* ---------- The cooking math ---------- */
+.chore .chore-cooking {
+  position: relative;
+  overflow: hidden;
+  margin-top: clamp(2.5rem, 5vw, 3.5rem);
+  padding: clamp(2rem, 4.5vw, 3.5rem);
+  border-radius: 24px;
+  background: radial-gradient(40rem 22rem at 100% 0%, rgba(224, 122, 47, 0.16), transparent 60%), var(--leaf-deep);
+  color: var(--paper);
+}
+
+/* Two classes deep to beat `.chore svg`; it sits in the corner so its drift stays behind the panel. */
+.chore .chore-cooking-steam {
+  position: absolute;
+  top: -2.5rem;
+  right: -3.5rem;
+  width: clamp(12rem, 24vw, 18rem);
+  height: auto;
+  stroke: rgba(250, 247, 240, 0.08);
+  stroke-width: 3;
+  pointer-events: none;
+}
+
+.chore-cooking-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 2rem 3.5rem;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .chore-cooking-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chore .chore-cooking h3 {
+  font-size: clamp(1.8rem, 3.4vw, 2.6rem);
+  line-height: 1.08;
+  color: var(--paper);
+  text-wrap: balance;
+}
+
+.chore-cooking h3 em {
+  font-style: italic;
+  color: var(--carrot-soft);
+}
+
+.chore .chore-cooking-grid p {
+  margin-top: 1rem;
+  max-width: 44ch;
+  font-size: 1.02rem;
+  line-height: 1.65;
+  color: rgba(250, 247, 240, 0.82);
+}
+
+.chore .chore-figures {
+  display: grid;
+  padding: 0;
+  list-style: none;
+}
+
+/* Close to the copy, so a short drift. */
+.chore .chore-figures[data-speed] {
+  --amp: 32px;
+}
+
+.chore-figures li {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.85rem 0;
+  border-top: 1px solid rgba(250, 247, 240, 0.18);
+}
+
+.chore-figures b {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.7rem, 3vw, 2.2rem);
+  line-height: 1.1;
+}
+
+.chore-arrow {
+  color: var(--carrot);
+}
+
+.chore-figure-caption {
+  font-size: 0.9rem;
+  color: rgba(250, 247, 240, 0.75);
+}
+
+.chore .chore-cooking-grid .chore-source {
+  margin-top: 0.4rem;
+  font-size: 0.78rem;
+  color: rgba(250, 247, 240, 0.65);
+}
+
+.chore .chore-cooking-foot {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(250, 247, 240, 0.16);
+}
+
+.chore-punchline {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+  line-height: 1.2;
+}
+
+.chore-punchline em {
+  font-style: italic;
+  color: var(--carrot-soft);
+}
+
+.chore-cooking-foot p:last-child {
+  font-size: 0.92rem;
+  color: rgba(250, 247, 240, 0.8);
+}
+
+.chore-cooking-foot a {
+  color: var(--paper);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.chore-cooking-foot a:focus-visible {
+  outline: 3px solid var(--carrot);
+  outline-offset: 2px;
+}
+
+/* ---------- Bridge to the community section ---------- */
+.chore .chore-bridge {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  margin-top: clamp(2rem, 4vw, 3rem);
+}
+
+.chore-bridge p {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  max-width: 60ch;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.chore-bridge p svg {
+  flex: none;
+  width: 1.35rem;
+  height: 1.35rem;
+  margin-top: 0.2rem;
+  color: var(--carrot-deep);
+  stroke-width: 1.8;
+}
+
+.chore-bridge strong {
+  color: var(--ink);
+  font-weight: 600;
+}

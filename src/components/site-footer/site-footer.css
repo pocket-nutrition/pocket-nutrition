@@ -1,0 +1,113 @@
+/*
+ * Shared footer (see SiteFooter.tsx). The Food Dataset copies these rules: change them together.
+ * Rules carry two classes so page-level element styles (Infima's a, ul and p) never win over them.
+ */
+.site-footer {
+  background: var(--ink);
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: rgba(250, 247, 240, 0.75);
+}
+.site-footer .site-footer-inner {
+  box-sizing: border-box;
+  max-width: var(--site-max);
+  margin: 0 auto;
+  padding: 3.5rem var(--site-gutter) 2rem;
+}
+.site-footer .site-footer-grid {
+  display: grid;
+  grid-template-columns: 2fr repeat(3, 1fr);
+  gap: 2.5rem 2rem;
+  padding-bottom: 2.5rem;
+}
+.site-footer .pn-wordmark,
+.site-footer .pn-wordmark:hover {
+  color: var(--paper);
+}
+.site-footer .site-footer-tagline {
+  max-width: 32ch;
+  margin: 0.85rem 0 0;
+}
+.site-footer .site-footer-sources {
+  max-width: 40ch;
+  margin: 1rem 0 0;
+  font-size: 0.78rem;
+  color: rgba(250, 247, 240, 0.62);
+}
+.site-footer .site-footer-sources a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(250, 247, 240, 0.3);
+  text-underline-offset: 2px;
+}
+.site-footer .site-footer-heading {
+  margin: 0 0 0.9rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(250, 247, 240, 0.62);
+}
+.site-footer .site-footer-links {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.site-footer .site-footer-links li {
+  margin: 0;
+}
+.site-footer a {
+  color: rgba(250, 247, 240, 0.85);
+  text-decoration: none;
+}
+.site-footer a:hover {
+  color: var(--carrot-soft);
+  text-decoration: none;
+}
+.site-footer a:focus-visible {
+  outline: 2px solid var(--carrot);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+.site-footer .site-footer-bottom-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+}
+
+.site-footer .site-footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(250, 247, 240, 0.15);
+  font-size: 0.76rem;
+  color: rgba(250, 247, 240, 0.62);
+}
+.site-footer .site-footer-love {
+  margin: 1.75rem 0 0;
+  text-align: center;
+  font-size: 0.76rem;
+  color: rgba(250, 247, 240, 0.62);
+}
+.site-footer .site-footer-heart {
+  color: var(--carrot);
+}
+
+@media (max-width: 820px) {
+  .site-footer .site-footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .site-footer .site-footer-grid > :first-child {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 420px) {
+  .site-footer .site-footer-grid {
+    grid-template-columns: 1fr;
+  }
+}

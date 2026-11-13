@@ -1,0 +1,162 @@
+/*
+ * Brand tokens shared by every page. Defined once at :root so the homepage (src/css/home.css),
+ * the shared header and footer (src/components/site-nav, src/components/site-footer) and the
+ * docs theming below reference the same palette and the same page width.
+ */
+:root {
+  /* Page width and side gutter: the header bars, the footer and every page body line up on them. */
+  --site-max: 72rem;
+  --site-gutter: clamp(1.5rem, 5vw, 4rem);
+  --paper: #faf7f0;
+  --cream: #f1ead9;
+  --ink: #1e2b22;
+  --ink-soft: #4a5a4e;
+  --leaf: #3e7a4e;
+  --leaf-deep: #1f3d29;
+  --carrot: #e07a2f;
+  --carrot-soft: #f7e3cf;
+  /* Carrot dark enough for text on paper and cream. */
+  --carrot-deep: #b0561a;
+  --line: rgba(30, 43, 34, 0.14);
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Georgia, serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
+  /* Every page sits on paper, overscroll areas included. */
+  --ifm-background-color: var(--paper);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/*
+ * Pages drawn without the theme layout (home, privacy, tools): the footer stays at the bottom of
+ * the window even while a tool page has not mounted yet.
+ */
+.site-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.site-page-main {
+  flex: 1 0 auto;
+}
+
+/*
+ * Documentation pages (/docs) are the only ones drawn by the Docusaurus theme, so its Infima
+ * variables map to the brand tokens here, scoped to docs routes so the homepage and the tool
+ * pages keep their own styles.
+ */
+html.plugin-docs {
+  --ifm-color-primary: #3e7a4e;
+  --ifm-color-primary-dark: #386e46;
+  --ifm-color-primary-darker: #356842;
+  --ifm-color-primary-darkest: #2b5536;
+  --ifm-color-primary-light: #448656;
+  --ifm-color-primary-lighter: #478c5a;
+  --ifm-color-primary-lightest: #519f66;
+  --ifm-font-color-base: var(--ink);
+  --ifm-font-family-base: var(--font-body);
+  --ifm-heading-font-family: var(--font-display);
+  --ifm-heading-font-weight: 500;
+  --ifm-font-family-monospace: var(--font-mono);
+  --ifm-code-font-size: 90%;
+  --ifm-toc-border-color: var(--line);
+  --doc-sidebar-width: 14rem;
+  --docusaurus-highlighted-code-line-bg: rgba(62, 122, 78, 0.12);
+}
+
+/*
+ * The theme navbar is the Docs bar, under the group bar (src/theme/Navbar): same height, width,
+ * colours and current-page underline as the website's bar (src/components/site-nav/site-nav.css).
+ */
+.theme-layout-navbar {
+  --ifm-navbar-padding-horizontal: var(--site-gutter);
+  --ifm-navbar-padding-vertical: 0;
+  --ifm-navbar-shadow: none;
+  --ifm-navbar-background-color: rgba(250, 247, 240, 0.92);
+  --ifm-navbar-link-color: var(--ink-soft);
+  --ifm-navbar-link-hover-color: var(--leaf-deep);
+  --ifm-navbar-link-active-color: var(--ink);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-body);
+}
+/*
+ * The blur sits on a layer behind the bar: on the bar itself, backdrop-filter would make it the
+ * containing block of the theme's fixed mobile sidebar and clip that sidebar to the bar's height.
+ */
+.theme-layout-navbar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  backdrop-filter: blur(8px);
+}
+.theme-layout-navbar .navbar__inner {
+  max-width: calc(var(--site-max) - 2 * var(--site-gutter));
+  margin: 0 auto;
+}
+.theme-layout-navbar .pn-wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  margin-right: 0;
+}
+@media (min-width: 997px) {
+  .theme-layout-navbar .navbar__items--right {
+    align-self: stretch;
+    gap: 1.5rem;
+  }
+  .theme-layout-navbar .navbar__items--right > .navbar__link {
+    display: inline-flex;
+    align-items: center;
+    align-self: stretch;
+    padding: 0;
+    font-size: 0.88rem;
+    font-weight: 500;
+  }
+  .theme-layout-navbar .navbar__link--active {
+    font-weight: 600;
+    box-shadow: inset 0 -2px 0 var(--carrot);
+  }
+}
+/* Small screens: the menu button sits on the right, as on the other sites. */
+.theme-layout-navbar .navbar__toggle {
+  order: 1;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: 0 -0.6rem 0 auto;
+  color: var(--ink);
+}
+.theme-layout-navbar .navbar__toggle svg {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+.theme-layout-navbar .navbar__toggle path {
+  stroke-width: 2.6;
+}
+/* The mobile sidebar would inherit the bar's translucent paper: keep the page from showing through. */
+.theme-layout-navbar .navbar-sidebar {
+  background-color: var(--paper);
+}
+
+/* The docs layout, sidebar included, lines up on the same width as the bars. */
+html.plugin-docs .theme-layout-main {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--site-max);
+  margin: 0 auto;
+  padding: 0 calc(var(--site-gutter) - var(--ifm-spacing-horizontal));
+}
+@media (min-width: 997px) {
+  html.plugin-docs .theme-layout-main {
+    padding: 0 var(--site-gutter);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

@@ -1,0 +1,263 @@
+/*
+ * Shared header. Every Pocket Nutrition page opens with two bars:
+ *  - .group-bar: the dark strip listing the group's sites, identical on every site;
+ *  - .site-nav: the light, sticky bar of the current site (wordmark, the site's own links).
+ * The documentation draws .group-bar above the theme navbar, which src/css/custom.css styles like
+ * .site-nav. The Food Dataset (pocket-nutrition-community, app/templates/base.html) copies these
+ * rules: change them together.
+ *
+ * Rules carry two classes so page-level element styles (Infima's a and ul, `.pn-privacy a`) never
+ * win over them.
+ */
+
+/* ---------- Wordmark ---------- */
+.pn-wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.pn-wordmark:hover {
+  color: var(--ink);
+  text-decoration: none;
+}
+.pn-wordmark .pn-wordmark-mark {
+  color: var(--carrot);
+}
+.pn-wordmark .pn-wordmark-suffix {
+  margin-left: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* ---------- Group bar ---------- */
+.group-bar {
+  background: var(--ink);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  line-height: 1;
+}
+.group-bar .group-bar-inner {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  max-width: var(--site-max);
+  height: 2.25rem;
+  margin: 0 auto;
+  padding: 0 var(--site-gutter);
+}
+.group-bar .group-bar-sites {
+  display: flex;
+  gap: 1.375rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.group-bar .group-bar-sites > li {
+  display: flex;
+  margin: 0;
+}
+.group-bar .group-bar-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 500;
+  color: rgba(250, 247, 240, 0.72);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+.group-bar .group-bar-link:hover {
+  color: var(--paper);
+  text-decoration: none;
+}
+.group-bar .group-bar-link[aria-current] {
+  font-weight: 600;
+  color: var(--paper);
+  box-shadow: inset 0 -2px 0 var(--carrot);
+}
+.group-bar .group-bar-star {
+  width: 0.8rem;
+  height: 0.8rem;
+  fill: var(--carrot);
+}
+.group-bar .group-bar-external {
+  width: 0.75rem;
+  height: 0.75rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---------- Site bar ---------- */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  border-bottom: 1px solid var(--line);
+  background: rgba(250, 247, 240, 0.92);
+  backdrop-filter: blur(8px);
+  font-family: var(--font-body);
+  line-height: 1.2;
+}
+.site-nav .site-nav-inner {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  max-width: var(--site-max);
+  height: 3.75rem;
+  margin: 0 auto;
+  padding: 0 var(--site-gutter);
+}
+.site-nav .site-nav-links {
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  gap: 1.5rem;
+}
+/* Full bar height, so the current page's underline sits on the bar's bottom edge. */
+.site-nav .site-nav-link {
+  display: inline-flex;
+  align-items: center;
+  align-self: stretch;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.site-nav .site-nav-link:hover {
+  color: var(--leaf-deep);
+  text-decoration: none;
+}
+.site-nav .site-nav-link[aria-current] {
+  font-weight: 600;
+  color: var(--ink);
+  box-shadow: inset 0 -2px 0 var(--carrot);
+}
+/* Side tools: in the bar, with less weight than the site's own sections. */
+.site-nav .site-nav-link.is-secondary {
+  font-size: 0.82rem;
+  font-weight: 400;
+}
+.site-nav .site-nav-divider {
+  width: 1px;
+  height: 1.25rem;
+  background: var(--line);
+}
+.site-nav .site-nav-cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  background: var(--leaf-deep);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--paper);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: box-shadow 0.15s;
+}
+.site-nav .site-nav-cta:hover {
+  color: var(--paper);
+  text-decoration: none;
+  box-shadow: 0 6px 16px rgba(31, 61, 41, 0.28);
+}
+.site-nav .site-nav-toggle {
+  display: none;
+}
+
+.group-bar .group-bar-link:focus-visible,
+.site-nav a:focus-visible,
+.site-nav .site-nav-toggle:focus-visible {
+  outline: 2px solid var(--carrot);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ---------- Small screens: the group bar scrolls sideways, the site's links fold into a menu ---------- */
+@media (max-width: 860px) {
+  .group-bar .group-bar-inner {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .group-bar .group-bar-inner::-webkit-scrollbar {
+    display: none;
+  }
+  .group-bar .group-bar-sites {
+    gap: 1rem;
+  }
+
+  .site-nav .site-nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-right: -0.6rem;
+    padding: 0;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .site-nav .site-nav-toggle svg {
+    width: 1.4rem;
+    height: 1.4rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+  .site-nav .site-nav-links {
+    display: none;
+  }
+  .site-nav .site-nav-links.is-open {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 0.5rem var(--site-gutter) 1.5rem;
+    border-bottom: 1px solid var(--line);
+    background: var(--paper);
+    box-shadow: 0 24px 32px -28px rgba(31, 61, 41, 0.5);
+  }
+  .site-nav .site-nav-links.is-open .site-nav-link {
+    min-height: 2.75rem;
+    font-size: 1rem;
+  }
+  .site-nav .site-nav-links.is-open .site-nav-link[aria-current] {
+    padding-left: 0.85rem;
+    box-shadow: inset 3px 0 0 var(--carrot);
+  }
+  .site-nav .site-nav-links.is-open .site-nav-divider {
+    width: auto;
+    height: 1px;
+    margin: 0.5rem 0;
+  }
+  .site-nav .site-nav-links.is-open .site-nav-cta {
+    justify-content: center;
+    min-height: 2.75rem;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+  }
+}

@@ -1,0 +1,134 @@
+/*
+ * "Merci. Cheers. Thank you." (DataSources.tsx): the homepage's closing thanks to the open food
+ * tables, each source thanked in its own language, on leaf green before the footer.
+ * Margins sit two classes deep so they beat home.css's `.pn-home * { margin: 0 }` reset.
+ */
+.data-sources {
+  position: relative;
+  overflow: hidden;
+  padding-top: calc(var(--section-pad) * 0.8);
+  padding-bottom: calc(var(--section-pad) * 0.8);
+  background:
+    radial-gradient(44rem 26rem at 82% 8%, rgba(224, 122, 47, 0.16), transparent 64%),
+    var(--leaf-deep);
+  color: var(--paper);
+}
+
+/* A large outline heart behind the heading. */
+.data-sources .data-sources-heart {
+  position: absolute;
+  top: -2.5rem;
+  right: max(1rem, calc(50% - 34rem));
+  width: 26rem;
+  height: 26rem;
+  fill: none;
+  stroke: var(--carrot);
+  stroke-width: 0.9;
+  opacity: 0.1;
+  rotate: 12deg;
+  pointer-events: none;
+}
+
+.data-sources .wrap {
+  position: relative;
+}
+
+.pn-home .data-sources .kicker {
+  color: var(--carrot-soft);
+}
+
+.data-sources h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.6rem, 5.2vw, 4.1rem);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  color: var(--paper);
+}
+
+.data-sources h2 em {
+  font-style: italic;
+  color: var(--carrot);
+}
+
+.data-sources .data-sources-lead {
+  margin-top: 1.25rem;
+  font-size: clamp(1.05rem, 1.6vw, 1.15rem);
+  line-height: 1.65;
+  color: rgba(250, 247, 240, 0.78);
+}
+
+/* ---------- One line per source ---------- */
+.data-sources .data-sources-list {
+  margin-top: clamp(2rem, 4vw, 2.5rem);
+  padding: 0;
+  list-style: none;
+}
+
+.data-sources-list li {
+  border-top: 1px solid rgba(250, 247, 240, 0.16);
+}
+
+.data-sources-list li:last-child {
+  border-bottom: 1px solid rgba(250, 247, 240, 0.16);
+}
+
+.data-sources-list a {
+  display: grid;
+  grid-template-columns: minmax(0, 29rem) minmax(0, 1fr);
+  gap: 0.35rem 2rem;
+  align-items: baseline;
+  padding: 1.3rem 0;
+  text-decoration: none;
+}
+
+.data-sources-list a:focus-visible {
+  outline: 2px solid var(--carrot);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+.data-sources-greeting {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.4vw, 1.95rem);
+  line-height: 1.15;
+  color: var(--carrot-soft);
+  transition: color 0.15s;
+}
+
+.data-sources-list a:hover .data-sources-greeting {
+  color: var(--paper);
+}
+
+.data-sources-reason {
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: rgba(250, 247, 240, 0.82);
+}
+
+@media (max-width: 760px) {
+  .data-sources-list a {
+    grid-template-columns: 1fr;
+  }
+}
+
+.data-sources .data-sources-love {
+  margin-top: 2rem;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.3rem;
+  line-height: 1.4;
+}
+
+.data-sources-love span {
+  font-style: normal;
+  color: var(--carrot);
+}
+
+.data-sources .data-sources-credits {
+  max-width: 96ch;
+  margin-top: 1rem;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: rgba(250, 247, 240, 0.55);
+}

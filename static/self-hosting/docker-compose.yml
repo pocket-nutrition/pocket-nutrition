@@ -1,0 +1,285 @@
+# Pocket Nutrition, self-hosted with Docker Compose.
+#
+# Needs Docker Engine 24+ with Compose 2.23.1+ (for the inline Caddy configuration at the end).
+# Settings come from .env, next to this file: copy env.example and fill it in.
+#
+# Profiles, enabled with COMPOSE_PROFILES in .env:
+#   (always)  the Nutrition API and the Food Dataset, with their databases
+#   setup     one-shot jobs, run with `docker compose run --rm`: reference data, model, search index
+#   vault     the encrypted cloud vault used by the iPhone app
+#   voice     the voice and photo recognition server, test mode only (see the guide)
+#   https     Caddy, which gets HTTPS certificates for the domains set in .env
+#
+# Pocket Nutrition images come from the GitHub Container Registry, built for linux/amd64 from the
+# main branch of each repository (`latest`).
+
+name: pocket-nutrition
+
+services:
+  # ---------- Databases ----------
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: pocket_nutrition
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: pocket_nutrition
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pocket_nutrition -d pocket_nutrition"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # The API's Elasticsearch client needs version 9.
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.3.3
+    restart: unless-stopped
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: -Xms1g -Xmx1g
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:9200/_cluster/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+
+  # Rebuilt by the Food Dataset service at every start, so it needs no volume.
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+
+  # ---------- Nutrition API and Food Dataset ----------
+
+  # Downloads the ingredient catalogue from GitHub at start, loads it into Redis, then serves the
+  # Food Dataset site. It only reports healthy once the catalogue is loaded.
+  community:
+    image: ghcr.io/pocket-nutrition/community:latest
+    platform: linux/amd64
+    restart: unless-stopped
+    environment:
+      REDIS_URL: redis://redis:6379/2
+      DATABASE_URL: postgresql://pocket_nutrition:${POSTGRES_PASSWORD}@postgres:5432/pocket_nutrition
+      API_URL: http://api:8080
+      RELOAD_TOKEN: ${RELOAD_TOKEN:?Set RELOAD_TOKEN in .env}
+      GITHUB_REPO: ${DATASET_REPO:-pocket-nutrition/knowledge}
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+    ports:
+      - "127.0.0.1:8003:8000"
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      start_period: 180s
+      retries: 10
+
+  # Predicts cooked values. It reads the model once at start: restart it after every training.
+  ml:
+    image: ghcr.io/pocket-nutrition/ml:latest
+    platform: linux/amd64
+    restart: unless-stopped
+    environment:
+      MODEL_PATH: /models/model.joblib
+    volumes:
+      - models:/models:ro
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+  api:
+    image: ghcr.io/pocket-nutrition/api:latest
+    platform: linux/amd64
+    restart: unless-stopped
+    environment:
+      DATASOURCE_URL: jdbc:postgresql://postgres:5432/pocket_nutrition
+      DATASOURCE_USERNAME: pocket_nutrition
+      DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_ELASTICSEARCH_URIS: http://elasticsearch:9200
+      ML_SERVICE_URL: http://ml:8000
+      NUTRITION_CACHE_ENABLED: "false"
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      ml:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health > /dev/null || exit 1"]
+      interval: 15s
+      timeout: 5s
+      start_period: 90s
+      retries: 10
+
+  # ---------- One-shot jobs (profile "setup") ----------
+
+  # The training job runs as uid 1001, and a new volume belongs to root: hand it over first.
+  models-init:
+    image: busybox:1.36
+    profiles: [setup]
+    command: ["chown", "-R", "1001:1001", "/models"]
+    volumes:
+      - models:/models
+
+  # Loads one public reference table per run: docker compose run --rm data --loader ciqual
+  data:
+    image: ghcr.io/pocket-nutrition/data:latest
+    platform: linux/amd64
+    profiles: [setup]
+    environment:
+      DATABASE_URL: postgresql://pocket_nutrition:${POSTGRES_PASSWORD}@postgres:5432/pocket_nutrition
+      DOWNLOAD_DIR: /tmp/raw
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Trains the model and rebuilds the search index: docker compose run --rm ingest
+  ingest:
+    image: ghcr.io/pocket-nutrition/ingest:latest
+    platform: linux/amd64
+    profiles: [setup]
+    environment:
+      DATABASE_URL: postgresql://pocket_nutrition:${POSTGRES_PASSWORD}@postgres:5432/pocket_nutrition
+      REDIS_URL: redis://redis:6379/2
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      MODEL_OUTPUT_PATH: /models/model.joblib
+      OPTUNA_TRIALS: ${OPTUNA_TRIALS:-20}
+    volumes:
+      - models:/models
+    depends_on:
+      models-init:
+        condition: service_completed_successfully
+      community:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+
+  # ---------- Cloud vault (profile "vault") ----------
+  # Optional services use ${VAR:-} on purpose: a required-variable check would also fire while
+  # their profile is off. Each one refuses to start when its secret is missing.
+
+  vault-db:
+    image: postgres:16-alpine
+    profiles: [vault]
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: vault
+      POSTGRES_PASSWORD: ${VAULT_DB_PASSWORD:-}
+      POSTGRES_DB: vault
+    volumes:
+      - vault-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vault -d vault"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  vault:
+    image: ghcr.io/pocket-nutrition/vault:latest
+    platform: linux/amd64
+    profiles: [vault]
+    restart: unless-stopped
+    environment:
+      VAULT_DATABASE_URL: postgresql://vault:${VAULT_DB_PASSWORD:-}@vault-db:5432/vault
+      VAULT_PRELOGIN_SECRET: ${VAULT_PRELOGIN_SECRET:-}
+      VAULT_ADMIN_TOKEN: ${VAULT_ADMIN_TOKEN:-}
+      VAULT_REGISTRATION: ${VAULT_REGISTRATION:-open}
+      VAULT_SERVER_NAME: ${VAULT_SERVER_NAME:-Pocket Nutrition Vault}
+      VAULT_TRUSTED_PROXY_HOPS: "1"
+    ports:
+      - "127.0.0.1:8010:8000"
+    depends_on:
+      vault-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/healthz', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+  # ---------- Voice and photo (profile "voice") ----------
+
+  # "simulator" answers every recording and photo with the same sample meal: the worker that
+  # really transcribes and recognises meals is not distributed yet.
+  recognition:
+    image: ghcr.io/pocket-nutrition/recognition:latest
+    platform: linux/amd64
+    profiles: [voice]
+    restart: unless-stopped
+    environment:
+      RECOGNITION_API_KEY: ${RECOGNITION_API_KEY:-}
+      RECOGNITION_TRUSTED_VAULTS: ${RECOGNITION_TRUSTED_VAULTS:-}
+      RECOGNITION_PIPELINE: simulator
+    ports:
+      - "127.0.0.1:8020:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+  # ---------- HTTPS (profile "https") ----------
+
+  # Real domains get Let's Encrypt certificates; *.localhost ones get Caddy's local certificates.
+  caddy:
+    image: caddy:2.10
+    profiles: [https]
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    configs:
+      - source: caddyfile
+        target: /etc/caddy/Caddyfile
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
+
+configs:
+  caddyfile:
+    content: |
+      ${API_DOMAIN:-api.localhost} {
+        reverse_proxy api:8080
+      }
+
+      ${DATASET_DOMAIN:-dataset.localhost} {
+        reverse_proxy community:8000
+      }
+
+      ${VAULT_DOMAIN:-vault.localhost} {
+        reverse_proxy vault:8000
+      }
+
+      ${RECOGNITION_DOMAIN:-recognition.localhost} {
+        reverse_proxy recognition:8000
+      }
+
+volumes:
+  postgres-data:
+  elasticsearch-data:
+  models:
+  vault-db-data:
+  caddy-data:
+  caddy-config:

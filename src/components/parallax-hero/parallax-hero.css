@@ -1,0 +1,345 @@
+/*
+ * Homepage hero (ParallaxHero.tsx). The copy column reuses the homepage type styles from
+ * src/css/home.css (.hero, h1, .lead, .cta-row, .oss-note); this file only adds the grid and
+ * the layered phone scene. Every scene size is in cqw so the whole scene scales as one piece.
+ * The layer drift itself comes from src/components/parallax/parallax.css.
+ */
+.parallax-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+}
+
+.parallax-hero-copy {
+  position: relative;
+  z-index: 1;
+}
+
+/* Infima's heading colour would otherwise win over the inherited brand ink. The size is a
+   step below the shared homepage h1 so the longer headline stays on four lines. */
+.parallax-hero h1 {
+  color: var(--ink);
+  font-size: clamp(2.4rem, 4.6vw, 3.9rem);
+  text-wrap: balance;
+}
+
+/* ---------- Scene and layers ---------- */
+/* Margins sit two classes deep so they beat home.css's `.pn-home * { margin: 0 }` reset. */
+.parallax-hero .parallax-hero-scene {
+  position: relative;
+  width: min(100%, 34rem);
+  aspect-ratio: 1 / 1.08;
+  margin-inline: auto;
+  container-type: inline-size;
+}
+
+@media (max-width: 900px) {
+  .parallax-hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .parallax-hero .parallax-hero-scene {
+    margin-top: 1.5rem;
+  }
+}
+
+.parallax-hero-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.parallax-hero-layer > * {
+  position: absolute;
+}
+
+/* ---------- Background (x0.5 and x0.8): the photographed dish, leaves ---------- */
+/* The white border reads as the rim of the plate around the photo. */
+.parallax-hero-plate {
+  left: 6%;
+  top: 8%;
+  width: 88%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1.8cqw solid #fff;
+  background: var(--cream);
+  box-shadow: 0 5cqw 9cqw -5cqw rgba(31, 61, 41, 0.4), 0 0 0 1px var(--line);
+}
+
+.parallax-hero-plate picture,
+.parallax-hero-plate img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.parallax-hero-plate img {
+  object-fit: cover;
+}
+
+.parallax-hero-leaf {
+  aspect-ratio: 1 / 1.9;
+  border-radius: 0 100% 0 100%;
+  background: rgba(62, 122, 78, 0.22);
+  border: 1px solid rgba(62, 122, 78, 0.4);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.parallax-hero-leaf.is-top {
+  left: 88%;
+  top: 2%;
+  width: 8%;
+  transform: rotate(-30deg);
+}
+
+.parallax-hero-leaf.is-right {
+  left: 90%;
+  top: 70%;
+  width: 12%;
+  transform: rotate(140deg);
+}
+
+.parallax-hero-leaf.is-low {
+  left: -2%;
+  top: 82%;
+  width: 10%;
+  transform: rotate(35deg);
+}
+
+/* ---------- Interface (x1.5): phone and today's card ---------- */
+.parallax-hero-phone {
+  left: 30%;
+  top: 5%;
+  width: 40%;
+  aspect-ratio: 9 / 19;
+  padding: 1.4cqw;
+  border-radius: 6.5cqw;
+  background: var(--leaf-deep);
+  box-shadow: 0 6cqw 10cqw -5cqw rgba(31, 61, 41, 0.55);
+}
+
+.parallax-hero-screen {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.6cqw;
+  padding: 4.6cqw 2.6cqw 2.6cqw;
+  border-radius: 5.2cqw;
+  background: var(--paper);
+  font-size: 2.3cqw;
+  overflow: hidden;
+}
+
+.parallax-hero-status {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+.parallax-hero-title {
+  font-family: var(--font-display);
+  font-size: 1.85em;
+  line-height: 1.05;
+}
+
+.parallax-hero .parallax-hero-day {
+  margin-top: -1cqw;
+  font-size: 0.85em;
+  color: var(--ink-soft);
+}
+
+.parallax-hero-meal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.75em 0.85em;
+  border-radius: 1em;
+  background: #fff;
+  border: 1px solid var(--line);
+}
+
+.parallax-hero-meal small {
+  display: block;
+  font-size: 0.8em;
+  color: var(--ink-soft);
+}
+
+.parallax-hero-meal b {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+}
+
+.parallax-hero-meal.is-empty {
+  background: transparent;
+  border-style: dashed;
+  color: var(--ink-soft);
+}
+
+.parallax-hero .parallax-hero-search {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4em;
+  padding: 0.45em 0.45em 0.45em 0.9em;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+}
+
+/* Scan, photo and voice live together in the search field, as in the apps. */
+.parallax-hero-tools {
+  flex: none;
+  display: flex;
+  gap: 0.3em;
+}
+
+.parallax-hero-tool {
+  display: grid;
+  place-items: center;
+  width: 2.1em;
+  height: 2.1em;
+  border-radius: 50%;
+}
+
+.parallax-hero-tool svg {
+  width: 56%;
+  height: 56%;
+  fill: #fff;
+}
+
+.parallax-hero-tool.is-scan {
+  background: var(--ink);
+}
+
+.parallax-hero-tool.is-photo {
+  background: var(--leaf-deep);
+}
+
+.parallax-hero-tool.is-voice {
+  background: var(--carrot);
+}
+
+.parallax-hero-card {
+  left: -2%;
+  top: 58%;
+  width: 34%;
+  display: grid;
+  gap: 0.5em;
+  padding: 1.1em 1.25em;
+  border-radius: 3cqw;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  -webkit-backdrop-filter: blur(10px) saturate(1.15);
+  backdrop-filter: blur(10px) saturate(1.15);
+  box-shadow: 0 4cqw 8cqw -4cqw rgba(31, 61, 41, 0.4);
+  font-size: 2.2cqw;
+}
+
+.parallax-hero-card-label {
+  font-size: 0.8em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.parallax-hero-card-value {
+  font-family: var(--font-display);
+  font-size: 2.3em;
+  line-height: 1;
+}
+
+.parallax-hero-bars {
+  display: grid;
+  gap: 0.4em;
+}
+
+.parallax-hero-bar {
+  display: grid;
+  grid-template-columns: 4.6em minmax(0, 1fr);
+  align-items: center;
+  gap: 0.5em;
+  font-size: 0.86em;
+}
+
+.parallax-hero-bar i {
+  display: block;
+  height: 0.5em;
+  border-radius: 999px;
+  background: var(--cream);
+  overflow: hidden;
+}
+
+.parallax-hero-bar i::after {
+  content: '';
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+}
+
+.parallax-hero-bar.is-protein i::after {
+  width: 64%;
+  background: var(--leaf);
+}
+
+.parallax-hero-bar.is-carbs i::after {
+  width: 48%;
+  background: var(--carrot);
+}
+
+.parallax-hero-bar.is-fat i::after {
+  width: 36%;
+  background: #3d6a7a;
+}
+
+.parallax-hero-card-extra {
+  font-size: 0.86em;
+  font-weight: 650;
+  color: var(--leaf-deep);
+}
+
+/* ---------- Accents (x2): one label per way to log a meal ---------- */
+/* Each label carries the same icon as its button in the search field, so the eye links them. */
+.parallax-hero-feature {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.45em 1.1em 0.45em 0.45em;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid var(--line);
+  box-shadow: 0 2cqw 4cqw -2.4cqw rgba(31, 61, 41, 0.45);
+  font-size: 2.5cqw;
+  font-weight: 650;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.parallax-hero-feature small {
+  display: block;
+  font-size: 0.85em;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+.parallax-hero-feature.is-photo {
+  left: 62%;
+  top: 2%;
+}
+
+.parallax-hero-feature.is-scan {
+  left: 1%;
+  top: 40%;
+}
+
+.parallax-hero-feature.is-voice {
+  left: 60%;
+  top: 84%;
+}
