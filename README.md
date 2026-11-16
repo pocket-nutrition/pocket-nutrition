@@ -34,8 +34,9 @@
 
 - **In your browser:** the [calculator](https://pocketnutrition.org/calculator) computes the
   nutrition of a meal with the live API.
-- **On your phone:** there is no store release yet. Build the [iPhone](https://github.com/pocket-nutrition/ios)
-  or [Android](https://github.com/pocket-nutrition/android) app from its source.
+- **On your phone:** on Android, download the signed APK from the
+  [latest release](https://github.com/pocket-nutrition/android/releases/latest). There is no store release yet;
+  build the [iPhone](https://github.com/pocket-nutrition/ios) app from its source.
 - **On your own servers:** [`static/self-hosting/`](static/self-hosting/) holds a Docker Compose file and a settings
   example that run the Nutrition API and the Food Dataset.
 
@@ -50,6 +51,11 @@ flowchart LR
   ingest -->|search index| api["Nutrition API<br>api"]
   ml --> api
   api --> apps["iPhone and Android apps"]
+  apps -->|voice and photos| recognition["Recognition server<br>recognition"]
+  worker["Mac worker<br>recognition-worker-osx"] -->|pulls jobs| recognition
+  apps <-->|encrypted journal| vault["Sync server<br>vault"]
+  worker -->|sealed results| vault
+  vaultweb["Web viewer<br>vault-web"] --> vault
 ```
 
 | Repository | What it is |
@@ -64,9 +70,11 @@ flowchart LR
 | [data](https://github.com/pocket-nutrition/data) | Loads the public reference tables: Ciqual, USDA, McCance & Widdowson, Open Food Facts |
 | [ingest](https://github.com/pocket-nutrition/ingest) | Trains the model and builds the search index |
 | [contracts](https://github.com/pocket-nutrition/contracts) | The API contract the apps share |
+| [recognition](https://github.com/pocket-nutrition/recognition) | Queues the voice recordings and plate photos the apps send, until a worker processes them |
+| [recognition-worker-osx](https://github.com/pocket-nutrition/recognition-worker-osx) | Turns those recordings and photos into foods with local models on a Mac |
+| [vault](https://github.com/pocket-nutrition/vault) | The end-to-end encrypted sync server for the journal: it stores what the phone encrypts, never the keys |
+| [vault-web](https://github.com/pocket-nutrition/vault-web) | Reads your vault journal in the browser, decrypted on your side |
 | This repository | The website and its documentation |
-
-Not public yet: the vault, the voice and photo recognition service, and the vault's web viewer.
 
 ## Contribute
 
