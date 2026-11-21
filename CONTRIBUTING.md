@@ -17,11 +17,13 @@ Or with the real server: `docker build -t pn-website . && docker run --rm -p 808
 ## Making changes
 
 - Pages live in `src/pages/`; the homepage sections are in `src/components/`.
-- The documentation is not in this repository yet: it will be published here once a maintainer has
-  reviewed it.
+- The documentation lives in `docs/` (sidebar in `sidebars.js`) and is served under `/docs`. A page
+  carries a "Not reviewed yet" notice until a maintainer has reviewed it and set `reviewed: true` in
+  its front matter. Diagrams are Mermaid code blocks.
 - The header and footer (`src/components/site-nav/`, `src/components/site-footer/`) are shared by every
-  Pocket Nutrition site, and the Food Dataset site (pocket-nutrition/community) repeats them. Change
-  their links in both repositories, never in one alone.
+  Pocket Nutrition site; the Food Dataset site (pocket-nutrition/community) and the journal viewer
+  (pocket-nutrition/vault-web) repeat them. Change their links in all three repositories, never in one
+  alone.
 - Tailwind classes are only available inside the calculator (`.pn-calculator`) and examples
   (`.pn-examples`) pages. Do not import Tailwind's preflight: it would restyle the whole site.
 - Keep the privacy policy accurate: it is linked from the App Store and Play Store listings.

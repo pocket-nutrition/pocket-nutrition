@@ -1,6 +1,6 @@
 import React from 'react';
 import Wordmark from '../site-nav/Wordmark';
-import {API_REFERENCE_URL, FOOD_DATASET_URL, GITHUB_URL, STATUS_URL} from '../site-nav/links';
+import {API_REFERENCE_URL, FOOD_DATASET_URL, GITHUB_URL, JOURNAL_URL, STATUS_URL} from '../site-nav/links';
 import './site-footer.css';
 
 interface FooterColumn {
@@ -14,6 +14,7 @@ const COLUMNS: FooterColumn[] = [
     title: 'Website',
     links: [
       ['Get the app', '/#apps'],
+      ['My journal', JOURNAL_URL],
       ['Calculator', '/calculator'],
       ['Examples', '/examples'],
       ['Privacy policy', '/privacy'],
@@ -28,9 +29,10 @@ const COLUMNS: FooterColumn[] = [
     ],
   },
   {
-    title: 'Developers',
+    title: 'Docs',
     links: [
-      ['Knowledge Editor', 'https://github.com/pocket-nutrition/knowledge-editor'],
+      ['Self-hosting', '/docs/self-hosting/overview'],
+      ['Knowledge Editor', '/docs/contribute/knowledge-editor'],
       ['API reference', API_REFERENCE_URL],
     ],
   },
@@ -38,7 +40,8 @@ const COLUMNS: FooterColumn[] = [
 
 /**
  * Footer of every page, documentation included (src/theme/Footer). The Food Dataset
- * (pocket-nutrition-community, app/templates/base.html) repeats it: change both together.
+ * (pocket-nutrition-community, app/templates/base.html) and the journal viewer
+ * (pocket-nutrition-vault-web, public/index.html) repeat it: change all three together.
  */
 export default function SiteFooter() {
   return (

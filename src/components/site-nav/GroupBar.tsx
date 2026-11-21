@@ -1,9 +1,9 @@
 import React from 'react';
-import {API_REFERENCE_URL, FOOD_DATASET_URL, STAR_REPO_URL} from './links';
+import {API_REFERENCE_URL, FOOD_DATASET_URL, JOURNAL_URL, STAR_REPO_URL} from './links';
 import './site-nav.css';
 
 /** The sites that draw this bar; the API reference is a bare Swagger page without it. */
-export type GroupSite = 'website' | 'dataset' | 'docs';
+export type GroupSite = 'website' | 'dataset' | 'docs' | 'journal';
 
 interface GroupLink {
   label: string;
@@ -16,6 +16,8 @@ interface GroupLink {
 const GROUP_LINKS: GroupLink[] = [
   {label: 'Website', href: '/', site: 'website'},
   {label: 'Food Dataset', href: FOOD_DATASET_URL, site: 'dataset'},
+  {label: 'Docs', href: '/docs', site: 'docs'},
+  {label: 'My journal', href: JOURNAL_URL, site: 'journal'},
   {label: 'API', href: API_REFERENCE_URL},
 ];
 

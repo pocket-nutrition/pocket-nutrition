@@ -141,6 +141,14 @@ html.plugin-docs {
   background-color: var(--paper);
 }
 
+/*
+ * Docs pages carry a sidebar and a table of contents next to the text, so they get a wider page.
+ * Changing the shared variable, not one block, keeps the bars, the body and the footer aligned.
+ */
+html.plugin-docs {
+  --site-max: 96rem;
+}
+
 /* The docs layout, sidebar included, lines up on the same width as the bars. */
 html.plugin-docs .theme-layout-main {
   box-sizing: border-box;
@@ -159,4 +167,15 @@ html.plugin-docs .theme-layout-main {
   html {
     scroll-behavior: auto;
   }
+}
+
+/*
+ * Callout titles: the theme sets them in the heading font, in small capitals, which reads as a
+ * formatting error with a serif display face. Use the body font, in normal case.
+ */
+.theme-admonition [class*='admonitionHeading'] {
+  font-family: var(--font-body);
+  text-transform: none;
+  font-size: 1rem;
+  font-weight: 600;
 }

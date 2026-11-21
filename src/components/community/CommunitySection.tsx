@@ -23,7 +23,7 @@ const WAYS_IN: Way[] = [
     body: 'Add a food, link it to its scientific source (Ciqual, USDA…) or write a recipe: each link makes our model and the app better. Then send a pull request; the Knowledge Editor prepares the files for you.',
     links: [
       ['Open the Food Dataset', 'https://community.pocketnutrition.org'],
-      ['Install the Knowledge Editor', 'https://github.com/pocket-nutrition/knowledge-editor'],
+      ['Install the Knowledge Editor', '/docs/contribute/knowledge-editor'],
     ],
   },
   {
@@ -50,9 +50,9 @@ interface HostedService {
 const SERVICES: HostedService[] = [
   {name: 'Nutrition API', repo: 'https://github.com/pocket-nutrition/api'},
   {name: 'Food Dataset', repo: 'https://github.com/pocket-nutrition/knowledge'},
-  {name: 'Vault'},
-  {name: 'Voice & photo'},
-  {name: 'Vault on the web'},
+  {name: 'Vault', repo: 'https://github.com/pocket-nutrition/vault'},
+  {name: 'Voice & photo', repo: 'https://github.com/pocket-nutrition/recognition'},
+  {name: 'Vault on the web', repo: 'https://github.com/pocket-nutrition/vault-web'},
 ];
 
 /**
@@ -148,7 +148,7 @@ export default function CommunitySection() {
             <p className="community-label">Run your own servers</p>
             <p>
               Point the app at your own servers from its settings. Your keys stay on your phone either
-              way.
+              way. <a href="/docs/self-hosting/overview">Read the self-hosting guide</a>
             </p>
             <ul className="community-services" aria-label="Whether each service’s code is public">
               {SERVICES.map((service) => (
@@ -166,11 +166,18 @@ export default function CommunitySection() {
           </div>
           <div id="apps">
             <p className="community-label">Try the apps</p>
-            <p>No store release yet: build the iPhone or Android app from its source.</p>
-            <p className="community-apps">
-              <a className="btn btn-ghost" href="https://github.com/pocket-nutrition/ios">iPhone source</a>
-              <a className="btn btn-ghost" href="https://github.com/pocket-nutrition/android">Android source</a>
-            </p>
+            <ul className="community-services" aria-label="How to get each app">
+              <li>
+                <a className="community-status is-public" href="/docs/install/android">
+                  Android · install
+                </a>
+              </li>
+              <li>
+                <a className="community-status is-pending" href="https://github.com/pocket-nutrition/ios">
+                  iPhone · from source
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>

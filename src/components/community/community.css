@@ -368,9 +368,8 @@
   color: var(--ink-soft);
 }
 
-.community .community-apps {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  margin-top: 0.3rem;
+/* A pending item can still be a link (the iPhone app, built from source). */
+a.community-status.is-pending:hover {
+  background: #e9e0cb;
+  color: var(--ink);
 }

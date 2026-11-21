@@ -1,19 +1,24 @@
 # Pocket Nutrition, self-hosted with Docker Compose.
 #
+# Guides: https://pocketnutrition.org/docs/self-hosting/docker-compose
 # Needs Docker Engine 24+ with Compose 2.23.1+ (for the inline Caddy configuration at the end).
 # Settings come from .env, next to this file: copy env.example and fill it in.
 #
 # Profiles, enabled with COMPOSE_PROFILES in .env:
 #   (always)  the Nutrition API and the Food Dataset, with their databases
 #   setup     one-shot jobs, run with `docker compose run --rm`: reference data, model, search index
-#   vault     the encrypted cloud vault used by the iPhone app
-#   voice     the voice and photo recognition server, test mode only (see the guide)
+#   vault     the encrypted cloud vault used by the apps
+#   voice     the voice and photo recognition server; a worker on a Mac does the recognition
 #   https     Caddy, which gets HTTPS certificates for the domains set in .env
 #
 # Pocket Nutrition images come from the GitHub Container Registry, built for linux/amd64 from the
 # main branch of each repository (`latest`).
 
 name: pocket-nutrition
+
+# Secrets use ${VAR:-} rather than a required-variable check, which would fire for every service,
+# even those you do not run. Each service refuses to start when its own secret is missing; an
+# empty RELOAD_TOKEN only turns off the catalogue reload endpoint.
 
 services:
   # ---------- Databases ----------
@@ -23,7 +28,7 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: pocket_nutrition
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-}
       POSTGRES_DB: pocket_nutrition
     volumes:
       - postgres-data:/var/lib/postgresql/data
@@ -71,7 +76,7 @@ services:
       REDIS_URL: redis://redis:6379/2
       DATABASE_URL: postgresql://pocket_nutrition:${POSTGRES_PASSWORD}@postgres:5432/pocket_nutrition
       API_URL: http://api:8080
-      RELOAD_TOKEN: ${RELOAD_TOKEN:?Set RELOAD_TOKEN in .env}
+      RELOAD_TOKEN: ${RELOAD_TOKEN:-}
       GITHUB_REPO: ${DATASET_REPO:-pocket-nutrition/knowledge}
       GITHUB_TOKEN: ${GITHUB_TOKEN:-}
     ports:
@@ -176,8 +181,6 @@ services:
         condition: service_healthy
 
   # ---------- Cloud vault (profile "vault") ----------
-  # Optional services use ${VAR:-} on purpose: a required-variable check would also fire while
-  # their profile is off. Each one refuses to start when its secret is missing.
 
   vault-db:
     image: postgres:16-alpine
@@ -220,8 +223,9 @@ services:
 
   # ---------- Voice and photo (profile "voice") ----------
 
-  # "simulator" answers every recording and photo with the same sample meal: the worker that
-  # really transcribes and recognises meals is not distributed yet.
+  # Receives recordings and photos from the apps and keeps them in memory until a worker takes
+  # them. The worker is a process on a Mac (github.com/pocket-nutrition/recognition-worker-osx):
+  # it fetches the jobs, so the Mac needs no open port. Without one, jobs expire after 48 hours.
   recognition:
     image: ghcr.io/pocket-nutrition/recognition:latest
     platform: linux/amd64
@@ -230,7 +234,7 @@ services:
     environment:
       RECOGNITION_API_KEY: ${RECOGNITION_API_KEY:-}
       RECOGNITION_TRUSTED_VAULTS: ${RECOGNITION_TRUSTED_VAULTS:-}
-      RECOGNITION_PIPELINE: simulator
+      RECOGNITION_WORKER_KEY: ${RECOGNITION_WORKER_KEY:-}
     ports:
       - "127.0.0.1:8020:8000"
     healthcheck:
